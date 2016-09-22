@@ -16,11 +16,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class addBooks extends AppCompatActivity {
 
 
     EditText name,author,isbn;
     Button image,submit;
+    data data=null;
     String imageURl=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +60,7 @@ public class addBooks extends AppCompatActivity {
             }
         });
 
-        final data data=new data(this);
+        data=new data(this);
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,11 +69,41 @@ public class addBooks extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"Fillup all the details buddy!",Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    data.add(name.getText().toString(), author.getText().toString(), isbn.getText().toString(), imageURl);
-                    Toast.makeText(getApplicationContext(), "Added successfully..", Toast.LENGTH_SHORT).show();
+                    show();
                 }
             }
         });
+
+    }
+
+    public void show(){
+        SweetAlertDialog pDialog = new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE);
+        pDialog.setTitleText("Confrim "+name.getText().toString()+"?");
+        pDialog.setContentText("Ok?");
+        pDialog.setConfirmText("Add it!");
+        pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sDialog) {
+                sDialog
+                        .setTitleText("Added!")
+                        .setContentText("Your book has been added!")
+                        .setConfirmText("OK")
+                        .setConfirmClickListener(null)
+                        .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                        data.add(name.getText().toString(), author.getText().toString(), isbn.getText().toString(), imageURl);
+                        Toast.makeText(getApplicationContext(), "Added successfully..", Toast.LENGTH_SHORT).show();
+                        name.setText("");
+                        author.setText("");
+                        isbn.setText("");
+            }
+        });
+        pDialog.setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sDialog) {
+                sDialog.cancel();
+            }
+        });
+        pDialog.show();
 
     }
 
