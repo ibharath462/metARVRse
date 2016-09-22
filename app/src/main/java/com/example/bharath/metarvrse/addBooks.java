@@ -1,8 +1,14 @@
 package com.example.bharath.metarvrse;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -14,6 +20,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -28,8 +36,10 @@ public class addBooks extends AppCompatActivity {
 
 
     EditText name,author,isbn;
+    private final int RESULT_CROP = 400;
     com.hanks.htextview.HTextView text;
     Button image,submit;
+    LinearLayout ll;
     int i=0;
     long s=0;
     Handler mHandler = null;
@@ -49,6 +59,7 @@ public class addBooks extends AppCompatActivity {
         image=(Button)findViewById(R.id.im);
         submit=(Button)findViewById(R.id.submit);
         mHandler = new Handler();
+        ll=(LinearLayout)findViewById(R.id.ll);
 
         image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,6 +114,7 @@ public class addBooks extends AppCompatActivity {
         pDialog.setTitleText("Confrim "+name.getText().toString()+"?");
         pDialog.setContentText("Ok?");
         pDialog.setConfirmText("Add it!");
+        pDialog.setCustomImage(Drawable.createFromPath(imageURl));
         pDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
             @Override
             public void onClick(SweetAlertDialog sDialog) {
@@ -156,6 +168,7 @@ public class addBooks extends AppCompatActivity {
         pDialog.show();
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -171,11 +184,27 @@ public class addBooks extends AppCompatActivity {
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             imageURl = cursor.getString(columnIndex);
             File file=new File(imageURl);
+            Bitmap bmp= BitmapFactory.decodeFile(imageURl);
+            //threshold size is fixed to 2MB
             s=file.length()/1048576;
-            Toast.makeText(getApplicationContext(),"Size:"+s+"MB",Toast.LENGTH_SHORT).show();
+            //Change to the required threshold size..
+            if(s>=2 || bmp.getWidth()>800 || bmp.getHeight()>600){
+                Toast.makeText(getApplicationContext(),"Image size is too high, please choose another low resolution image.",Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(
+                        Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                startActivityForResult(i, 1);
+                imageURl=null;
+            }
+            else{
+                imageURl = cursor.getString(columnIndex);
+            }
             cursor.close();
 
         }
+
+
 
     }
 
