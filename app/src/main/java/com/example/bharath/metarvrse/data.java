@@ -68,8 +68,8 @@ public class data extends SQLiteOpenHelper {
 
     public void delete(String t){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM books"+ " WHERE name"+"='"+t+"'");
-        Log.d("db:","Deleted value");
+        db.execSQL("DELETE FROM books" + " WHERE isbn" + "='" + t + "'");
+        Log.d("db:","Deleted value "+t);
         db.close();
     }
 
@@ -92,5 +92,19 @@ public class data extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         return  list;
+    }
+
+    boolean searchDuplicate(String t){
+        String selectQuery = "SELECT  * FROM " + books;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            do {
+                if(cursor.getString(3).equals(t)){
+                    return true;
+                }
+            } while (cursor.moveToNext());
+        }
+        return false;
     }
 }

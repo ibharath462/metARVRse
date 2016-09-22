@@ -3,10 +3,13 @@ package com.example.bharath.metarvrse;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,7 +31,7 @@ public class propertyArrayAdapter extends ArrayAdapter {
         this.bookProperties = objects;
     }
 
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(final int position, View convertView, ViewGroup parent){
 
         Property property = bookProperties.get(position);
 
@@ -40,11 +43,19 @@ public class propertyArrayAdapter extends ArrayAdapter {
         TextView author=(TextView)view.findViewById(R.id.author);
         TextView isbn=(TextView)view.findViewById(R.id.isbn);
         ImageView image = (ImageView) view.findViewById(R.id.image);
+        FloatingActionButton delete=(FloatingActionButton)view.findViewById(R.id.delete);
 
         book.setText(""+property.getName());
         author.setText("" + property.getAuthor());
         isbn.setText("" + property.getIsbn());
         image.setImageBitmap(BitmapFactory.decodeFile(property.getImage()));
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("Delete","Need to delete baby.."+position);
+                MainActivity.delete(position);
+            }
+        });
 
 
         return view;
