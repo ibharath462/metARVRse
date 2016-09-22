@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MetARVRse</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_add_books">addBooks</string>
+</resources>
