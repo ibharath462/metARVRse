@@ -127,6 +127,7 @@ public class addBooks extends AppCompatActivity {
                 data.add(name.getText().toString(), author.getText().toString(), isbn.getText().toString(), imageURl);
                 Toast.makeText(getApplicationContext(), "Added successfully..", Toast.LENGTH_SHORT).show();
                 name.setText("");
+                imageURl=null;
                 author.setText("");
                 isbn.setText("");
             }
